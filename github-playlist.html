@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Playlist — сборник проектов по языкам</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            background: #ffffff;
+            color: #000000;
+            line-height: 1.5;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            border-bottom: 2px solid #000000;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 0.875rem;
+            color: #1e3a8a;
+            font-weight: 500;
+        }
+
+        /* Input section */
+        .input-section {
+            background: #f5f5f5;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #000000;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .input-field {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #000000;
+            background: #ffffff;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+
+        button {
+            background: #1e3a8a;
+            color: #ffffff;
+            border: none;
+            padding: 0.75rem 2rem;
+            font-family: monospace;
+            font-size: 0.875rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background: #000000;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        /* Language tabs */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            border-bottom: 1px solid #000000;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: #000000;
+            border: 1px solid #000000;
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .tab-btn.active {
+            background: #1e3a8a;
+            color: #ffffff;
+            border-color: #1e3a8a;
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        .stat {
+            font-weight: 700;
+        }
+
+        .stat-value {
+            color: #1e3a8a;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        /* Projects grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .project-card {
+            border: 1px solid #000000;
+            padding: 1rem;
+            background: #ffffff;
+            transition: transform 0.1s ease;
+        }
+
+        .project-card:hover {
+            transform: translateX(4px);
+            box-shadow: -4px 4px 0 #1e3a8a;
+        }
+
+        .project-name {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            word-break: break-all;
+        }
+
+        .project-name a {
+            color: #000000;
+            text-decoration: none;
+            border-bottom: 1px solid #1e3a8a;
+        }
+
+        .project-name a:hover {
+            color: #1e3a8a;
+        }
+
+        .project-meta {
+            font-size: 0.75rem;
+            color: #1e3a8a;
+            font-family: monospace;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 0.875rem;
+            color: #1e3a8a;
+        }
+
+        .error {
+            background: #ffebee;
+            border-left: 4px solid #d32f2f;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            color: #b71c1c;
+            font-size: 0.875rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            border: 1px solid #000000;
+            color: #1e3a8a;
+        }
+
+        footer {
+            margin-top: 3rem;
+            padding-top: 1rem;
+            border-top: 1px solid #000000;
+            font-size: 0.75rem;
+            text-align: center;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>GitHub Playlist</h1>
+        <div class="subtitle">сборник проектов по языкам программирования</div>
+    </div>
+
+    <div class="input-section">
+        <div class="input-group">
+            <div class="input-field">
+                <label>GitHub Username</label>
+                <input type="text" id="username" placeholder="например, octocat" value="">
+            </div>
+            <button id="loadBtn">Загрузить проекты</button>
+        </div>
+        <div style="font-size: 0.7rem; margin-top: 0.75rem; color: #666;">
+            ⚡ API GitHub позволяет до 60 запросов в час без токена. Для большего — добавьте ? токен в параметры.
+        </div>
+    </div>
+
+    <div id="content">
+        <div class="empty-state">
+            Введите ваш GitHub username и нажмите «Загрузить проекты»
+        </div>
+    </div>
+
+    <footer>
+        GitHub Playlist — проекты сгруппированы по основному языку
+    </footer>
+</div>
+
+<script>
+    let allRepos = [];
+    let languageMap = new Map(); // язык -> список репозиториев
+    let currentLanguage = null;
+
+    const contentDiv = document.getElementById('content');
+    const usernameInput = document.getElementById('username');
+    const loadBtn = document.getElementById('loadBtn');
+
+    // Загрузка из localStorage при старте
+    const savedUsername = localStorage.getItem('github_username');
+    if (savedUsername) {
+        usernameInput.value = savedUsername;
+        loadRepos(savedUsername);
+    }
+
+    loadBtn.addEventListener('click', () => {
+        const username = usernameInput.value.trim();
+        if (!username) {
+            showError('Введите GitHub username');
+            return;
+        }
+        localStorage.setItem('github_username', username);
+        loadRepos(username);
+    });
+
+    async function loadRepos(username) {
+        showLoading();
+        try {
+            // Получаем все репозитории (пагинация до 100)
+            let page = 1;
+            let allReposData = [];
+            let hasMore = true;
+
+            while (hasMore && page <= 5) { // максимум 500 репозиториев
+                const response = await fetch(`https://api.github.com/users/${username}/repos?per_page=100&page=${page}&sort=updated`);
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error(`Пользователь "${username}" не найден`);
+                    } else if (response.status === 403) {
+                        throw new Error('Лимит запросов GitHub API. Попробуйте позже или используйте токен.');
+                    }
+                    throw new Error(`Ошибка HTTP: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.length === 0) {
+                    hasMore = false;
+                } else {
+                    allReposData.push(...data);
+                    page++;
+                }
+            }
+
+            if (allReposData.length === 0) {
+                throw new Error('У пользователя нет публичных репозиториев');
+            }
+
+            // Фильтруем forks (опционально) и сортируем
+            allReposData = allReposData.filter(repo => !repo.fork);
+            allRepos = allReposData;
+
+            // Группируем по языку
+            groupByLanguage();
+            renderTabsAndProjects();
+        } catch (error) {
+            showError(error.message);
+        }
+    }
+
+    function groupByLanguage() {
+        languageMap.clear();
+        
+        for (const repo of allRepos) {
+            const lang = repo.language || 'Other';
+            if (!languageMap.has(lang)) {
+                languageMap.set(lang, []);
+            }
+            languageMap.get(lang).push(repo);
+        }
+        
+        // Сортируем языки по количеству проектов
+        const sortedLangs = Array.from(languageMap.keys()).sort((a, b) => {
+            return languageMap.get(b).length - languageMap.get(a).length;
+        });
+        
+        // Пересоздаем Map с сортировкой
+        const sortedMap = new Map();
+        for (const lang of sortedLangs) {
+            sortedMap.set(lang, languageMap.get(lang));
+        }
+        languageMap = sortedMap;
+    }
+
+    function renderTabsAndProjects() {
+        const languages = Array.from(languageMap.keys());
+        if (languages.length === 0) {
+            contentDiv.innerHTML = '<div class="empty-state">Нет проектов с указанным языком</div>';
+            return;
+        }
+
+        currentLanguage = languages[0];
+        
+        // HTML структура
+        let html = `
+            <div class="tabs" id="tabsContainer">
+        `;
+        
+        for (const lang of languages) {
+            const count = languageMap.get(lang).length;
+            html += `
+                <button class="tab-btn ${currentLanguage === lang ? 'active' : ''}" data-language="${escapeHtml(lang)}">
+                    ${escapeHtml(lang)} <span style="font-size: 0.7rem;">(${count})</span>
+                </button>
+            `;
+        }
+        
+        html += `</div>`;
+        html += `<div class="stats" id="stats"></div>`;
+        html += `<div id="projectsContainer"></div>`;
+        
+        contentDiv.innerHTML = html;
+        
+        // Добавляем обработчики табов
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const lang = btn.getAttribute('data-language');
+                switchLanguage(lang);
+            });
+        });
+        
+        renderCurrentLanguage();
+    }
+    
+    function switchLanguage(lang) {
+        currentLanguage = lang;
+        
+        // Обновляем активный класс у табов
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            const btnLang = btn.getAttribute('data-language');
+            if (btnLang === lang) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        
+        renderCurrentLanguage();
+    }
+    
+    function renderCurrentLanguage() {
+        const repos = languageMap.get(currentLanguage);
+        if (!repos) return;
+        
+        // Обновляем статистику
+        const statsDiv = document.getElementById('stats');
+        statsDiv.innerHTML = `
+            <div class="stat">📁 Всего проектов: <span class="stat-value">${repos.length}</span></div>
+            <div class="stat">⭐ Сумма звёзд: <span class="stat-value">${repos.reduce((sum, r) => sum + r.stargazers_count, 0)}</span></div>
+        `;
+        
+        // Рендерим проекты
+        const projectsContainer = document.getElementById('projectsContainer');
+        
+        if (repos.length === 0) {
+            projectsContainer.innerHTML = '<div class="empty-state">Нет проектов на этом языке</div>';
+            return;
+        }
+        
+        // Сортируем по звёздам (по убыванию)
+        const sortedRepos = [...repos].sort((a, b) => b.stargazers_count - a.stargazers_count);
+        
+        let projectsHtml = `<div class="projects-grid">`;
+        
+        for (const repo of sortedRepos) {
+            projectsHtml += `
+                <div class="project-card">
+                    <div class="project-name">
+                        <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer">${escapeHtml(repo.name)}</a>
+                    </div>
+                    <div class="project-meta">
+                        ⭐ ${repo.stargazers_count} звезд · 🕒 ${new Date(repo.updated_at).toLocaleDateString('ru-RU')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        projectsHtml += `</div>`;
+        projectsContainer.innerHTML = projectsHtml;
+    }
+    
+    function showLoading() {
+        contentDiv.innerHTML = `
+            <div class="loading">
+                <div>Загрузка репозиториев с GitHub...</div>
+                <div style="margin-top: 0.5rem; font-size: 0.7rem;">⏳ Обычно занимает 2-5 секунд</div>
+            </div>
+        `;
+    }
+    
+    function showError(message) {
+        contentDiv.innerHTML = `
+            <div class="error">
+                ❌ Ошибка: ${escapeHtml(message)}
+            </div>
+            <div class="empty-state">
+                Попробуйте ввести корректный GitHub username
+            </div>
+        `;
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+</script>
+</body>
+</html>
